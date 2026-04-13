@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clippers Barbershop — Toronto</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -88,22 +90,16 @@ header::before{
   padding:9px 22px;font-size:11px;font-weight:600;
   letter-spacing:.15em;text-transform:uppercase;
   text-decoration:none;border-radius:12px;
-  color:var(--ink);
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.55) 0%,
-    rgba(255,255,255,0.25) 100%
-  );
-  border: 1px solid rgba(255,255,255,0.7);
-  box-shadow:
-    0 2px 0 rgba(255,255,255,0.8) inset,
-    0 4px 12px rgba(0,0,0,0.1);
-  backdrop-filter: blur(12px);
-  transition: all .25s;
+  color:#FAFAF8;
+  background:var(--ink);
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  transition:background .2s,box-shadow .2s,transform .2s;
 }
 .header-book:hover{
-  background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
-  box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset, 0 6px 20px rgba(0,0,0,0.13);
+  background:#2a2a28;
+  box-shadow:0 6px 20px rgba(0,0,0,0.32);
+  transform:translateY(-1px);
 }
 
 /* ── HERO ── */
@@ -198,17 +194,19 @@ header::before{
 
 /* ── BARBERS ── */
 .barbers{padding:80px 32px}
-.section-meta{
-  display:flex;justify-content:space-between;align-items:baseline;
-  margin-bottom:48px;
-}
 .section-label{
+  display:block;
   font-size:10px;font-weight:500;letter-spacing:.3em;
   text-transform:uppercase;color:var(--mid);
+  margin-bottom:10px;
 }
-.section-count{
+.section-title{
   font-family:'Bebas Neue',sans-serif;
-  font-size:48px;color:var(--light);line-height:1;
+  font-size:clamp(52px,6vw,80px);
+  letter-spacing:0.02em;
+  line-height:1;
+  color:var(--ink);
+  margin-bottom:48px;
 }
 .barbers-grid{
   display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
@@ -388,8 +386,51 @@ header::before{
 .info-map{
   height:320px;border-radius:20px;overflow:hidden;
   box-shadow:0 12px 40px rgba(0,0,0,0.1);
+  position:relative;cursor:pointer;
 }
-.info-map iframe{width:100%;height:100%;border:0;display:block;}
+#map{width:100%;height:100%;}
+.leaflet-container{background:#EFEFED;}
+/* hide leaflet attribution to keep it clean */
+.leaflet-control-attribution{display:none}
+.leaflet-control-zoom{display:none}
+/* custom marker */
+.map-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--ink);
+  border:2px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+  position:relative;
+}
+@keyframes map-ping{
+  0%{transform:scale(1);opacity:0.7}
+  70%{transform:scale(2.8);opacity:0}
+  100%{transform:scale(1);opacity:0}
+}
+.map-dot::after{
+  content:'';position:absolute;inset:-4px;
+  border-radius:50%;
+  border:1.5px solid var(--ink);
+  animation:map-ping 2s ease-out infinite;
+}
+/* hint overlay */
+.map-hint{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  z-index:1000;pointer-events:none;
+  padding:7px 16px;border-radius:30px;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.3) 100%);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 4px 12px rgba(0,0,0,0.08);
+  transition:opacity 0.4s;
+  white-space:nowrap;
+}
+@keyframes hint-bob{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-4px)}
+}
+.map-hint{animation:hint-bob 2s ease-in-out infinite;}
 .info-label{
   font-size:10px;font-weight:500;letter-spacing:.3em;
   text-transform:uppercase;color:var(--mid);margin-bottom:20px;
@@ -639,6 +680,166 @@ header::before{
 .barber-card-wrap:nth-child(2){transition-delay:0.15s}
 .barber-card-wrap:nth-child(3){transition-delay:0.3s}
 
+/* ── BEFORE / AFTER ── */
+.ba-section{
+  padding:80px 32px;
+}
+.ba-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  max-width:1100px;
+  margin:0 auto;
+}
+.ba-card-wrap{
+  perspective:1000px;
+  cursor:pointer;
+  user-select:none;
+}
+/* float wiggle to signal interactivity */
+@keyframes ba-float{
+  0%,100%{transform:translateY(0) rotate(-0.4deg)}
+  50%{transform:translateY(-6px) rotate(0.4deg)}
+}
+.ba-card-wrap:not(.ba-flipped){
+  animation:ba-float 3s ease-in-out infinite;
+}
+.ba-card-inner{
+  position:relative;
+  width:100%;
+  aspect-ratio:3/4;
+  transform-style:preserve-3d;
+  transition:transform 0.9s cubic-bezier(.16,1,.3,1);
+  border-radius:18px;
+}
+.ba-card-wrap.ba-flipped .ba-card-inner{
+  transform:rotateY(180deg);
+}
+.ba-card-front,.ba-card-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.4);
+  box-shadow:0 8px 32px rgba(0,0,0,0.12);
+}
+.ba-card-back{
+  transform:rotateY(180deg);
+}
+.ba-card-front img,.ba-card-back img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+}
+/* label chip */
+.ba-label{
+  position:absolute;
+  bottom:16px;left:16px;
+  padding:6px 14px;
+  border-radius:30px;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;letter-spacing:0.08em;
+  text-transform:uppercase;
+  background:linear-gradient(135deg,rgba(255,255,255,0.38) 0%,rgba(255,255,255,0.18) 100%);
+  backdrop-filter:blur(16px) saturate(180%);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.55);
+  box-shadow:0 2px 0 rgba(255,255,255,0.5) inset,0 4px 12px rgba(0,0,0,0.08);
+  color:var(--ink);
+}
+/* pulsing TAP badge on front */
+.ba-tap{
+  position:absolute;
+  top:14px;right:14px;
+  width:46px;height:46px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+  font-size:10px;font-weight:600;letter-spacing:0.06em;
+  text-transform:uppercase;
+  background:linear-gradient(135deg,rgba(255,255,255,0.5) 0%,rgba(255,255,255,0.25) 100%);
+  backdrop-filter:blur(12px) saturate(180%);
+  -webkit-backdrop-filter:blur(12px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 4px 16px rgba(0,0,0,0.1);
+  color:var(--ink);
+}
+@keyframes ba-pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.18);opacity:0.7}
+}
+.ba-card-wrap:not(.ba-flipped) .ba-tap{
+  animation:ba-pulse 1.6s ease-in-out infinite;
+}
+.ba-card-wrap.ba-flipped .ba-tap{
+  display:none;
+}
+@media(max-width:768px){
+  .ba-grid{grid-template-columns:1fr 1fr}
+  .ba-grid .ba-card-wrap:last-child{display:none}
+}
+
+/* ── MID CTA ── */
+.mid-cta{
+  display:inline-block;
+  padding:14px 36px;
+  font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  text-decoration:none;border-radius:14px;
+  color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.25) 100%);
+  backdrop-filter:blur(16px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 6px 20px rgba(0,0,0,0.09);
+  transition:box-shadow .25s,transform .25s;
+}
+.mid-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 2px 0 rgba(255,255,255,0.8) inset,0 10px 28px rgba(0,0,0,0.14);
+}
+
+/* ── REVIEWS ── */
+.reviews{
+  padding:80px 32px;
+  background:var(--white);
+}
+.reviews-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:0;
+}
+.review-card{
+  padding:28px 24px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0.3) 100%);
+  backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 8px 28px rgba(0,0,0,0.07);
+  display:flex;flex-direction:column;gap:16px;
+}
+.review-stars{
+  display:flex;gap:3px;
+}
+.review-stars span{
+  color:var(--ink);font-size:13px;
+}
+.review-text{
+  font-size:14px;line-height:1.75;color:var(--ink);
+  font-weight:300;flex:1;
+}
+.review-author{
+  display:flex;align-items:center;gap:12px;
+  padding-top:16px;
+  border-top:1px solid rgba(0,0,0,0.06);
+}
+.review-avatar{
+  width:36px;height:36px;border-radius:50%;
+  object-fit:cover;
+  border:1.5px solid rgba(255,255,255,0.7);
+}
+.review-name{font-size:12px;font-weight:500;color:var(--ink);}
+.review-source{font-size:10px;color:var(--mid);letter-spacing:.05em;}
+
 /* ── MOBILE ── */
 @media(max-width:768px){
   .header-loc{display:none}
@@ -649,6 +850,7 @@ header::before{
   .info{grid-template-columns:1fr}
   .info-map{height:240px;}
   .barbers-grid{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
   .float-nav{padding:6px 6px 6px 14px}
   .float-nav-logo{display:none}
   .float-nav a{padding:8px 12px;font-size:10px}
@@ -683,7 +885,7 @@ header::before{
     <span class="line2">PERS</span>
   </h1>
   <div class="hero-sub">
-    <p class="hero-desc">Three master barbers on College Street. No compromises, no waiting — just book online and walk in ready.</p>
+    <p class="hero-desc">Premium cuts &amp; fades in Little Italy since 2019. Three master barbers, zero compromises.</p>
     <a href="https://n802209.alteg.io" class="hero-cta">
       Book Your Cut
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -695,10 +897,8 @@ header::before{
 
 <!-- BARBERS -->
 <section class="barbers" id="team">
-  <div class="section-meta reveal">
-    <span class="section-label">The Team</span>
-    <span class="section-count">03</span>
-  </div>
+  <p class="section-label reveal">The Team</p>
+  <h2 class="section-title reveal d1">OUR BARBERS</h2>
   <div class="barbers-grid" id="barbersGrid">
     <div class="barber-card-wrap">
       <div class="barber-card-inner">
@@ -748,32 +948,67 @@ header::before{
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat">
-    <div class="stat-n"><span class="counter" data-target="264">0</span><span class="stat-suffix">+</span></div>
-    <div class="stat-l">Five-Star Reviews</div>
+<!-- BEFORE / AFTER -->
+<section class="ba-section" id="results">
+  <p class="section-label reveal">Results</p>
+  <h2 class="section-title reveal d1">BEFORE &amp; AFTER</h2>
+  <div class="ba-grid">
+
+    <!-- Card 1 -->
+    <div class="ba-card-wrap">
+      <div class="ba-card-inner">
+        <div class="ba-card-front">
+          <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80" alt="Before haircut 1">
+          <span class="ba-label">Before</span>
+          <span class="ba-tap">Tap</span>
+        </div>
+        <div class="ba-card-back">
+          <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80" alt="After haircut 1">
+          <span class="ba-label">After</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="ba-card-wrap" style="animation-delay:0.4s">
+      <div class="ba-card-inner">
+        <div class="ba-card-front">
+          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80" alt="Before haircut 2">
+          <span class="ba-label">Before</span>
+          <span class="ba-tap">Tap</span>
+        </div>
+        <div class="ba-card-back">
+          <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80" alt="After haircut 2">
+          <span class="ba-label">After</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="ba-card-wrap" style="animation-delay:0.8s">
+      <div class="ba-card-inner">
+        <div class="ba-card-front">
+          <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80" alt="Before haircut 3">
+          <span class="ba-label">Before</span>
+          <span class="ba-tap">Tap</span>
+        </div>
+        <div class="ba-card-back">
+          <img src="https://images.unsplash.com/photo-1567894340315-735d7c361db0?w=600&q=80" alt="After haircut 3">
+          <span class="ba-label">After</span>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <div class="stat">
-    <div class="stat-n"><span class="counter" data-target="5">0</span><span class="stat-suffix">yr</span></div>
-    <div class="stat-l">On College St</div>
+  <div style="text-align:center;margin-top:40px;">
+    <a href="https://n802209.alteg.io" class="mid-cta reveal">Book Your Appointment →</a>
   </div>
-  <div class="stat">
-    <div class="stat-n"><span class="counter" data-target="3">0</span><span class="stat-suffix">+</span></div>
-    <div class="stat-l">Master Barbers</div>
-  </div>
-  <div class="stat">
-    <div class="stat-n"><span class="counter" data-target="7">0</span><span class="stat-suffix">d</span></div>
-    <div class="stat-l">Open Every Week</div>
-  </div>
-</div>
+</section>
 
 <!-- SERVICES -->
 <section class="services" id="services">
-  <div class="section-meta reveal">
-    <span class="section-label">Services</span>
-    <span class="section-count">06</span>
-  </div>
+  <p class="section-label reveal">Services</p>
+  <h2 class="section-title reveal d1">WHAT WE DO</h2>
   <div class="services-grid">
     <div class="srv reveal">
       <img class="srv-img" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80&fit=crop" alt="Classic Haircut">
@@ -802,6 +1037,71 @@ header::before{
   </div>
 </section>
 
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="264">0</span><span class="stat-suffix">+</span></div>
+    <div class="stat-l">Five-Star Reviews</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="5">0</span><span class="stat-suffix">yr</span></div>
+    <div class="stat-l">On College St</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="3">0</span><span class="stat-suffix">+</span></div>
+    <div class="stat-l">Master Barbers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="7">0</span><span class="stat-suffix">d</span></div>
+    <div class="stat-l">Open Every Week</div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <p class="section-label reveal">What clients say</p>
+  <h2 class="section-title reveal d1">REVIEWS</h2>
+  <div class="reviews-grid">
+
+    <div class="review-card reveal">
+      <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="review-text">"Best fade I've ever had in Toronto. Jack really listens to what you want and delivers every single time. The place has great vibes too."</p>
+      <div class="review-author">
+        <img class="review-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&fit=crop&crop=face" alt="Marcus T.">
+        <div>
+          <div class="review-name">Marcus T.</div>
+          <div class="review-source">Google · 2 weeks ago</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card reveal d1">
+      <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="review-text">"Been coming here for 3 years. Mike never misses. Booking online is super easy and they're always on time. Honestly wouldn't go anywhere else."</p>
+      <div class="review-author">
+        <img class="review-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80&fit=crop&crop=face" alt="Daniel R.">
+        <div>
+          <div class="review-name">Daniel R.</div>
+          <div class="review-source">Google · 1 month ago</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card reveal d2">
+      <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="review-text">"Took my son for his first real haircut. Alex was patient, kind and did an amazing job. The whole experience felt premium without being pretentious."</p>
+      <div class="review-author">
+        <img class="review-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80&fit=crop&crop=face" alt="Tomasz W.">
+        <div>
+          <div class="review-name">Tomasz W.</div>
+          <div class="review-source">Google · 3 weeks ago</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- INFO -->
 <section class="info" id="about">
   <div class="reveal">
@@ -809,11 +1109,9 @@ header::before{
     <div class="info-big">884<br>College St<br>Toronto</div>
     <p class="info-text">Walk-ins welcome.<br>Online booking recommended.</p>
   </div>
-  <div class="info-map reveal d1">
-    <iframe
-      src="https://maps.google.com/maps?q=884+College+St,+Toronto,+ON&t=&z=16&ie=UTF8&iwloc=&output=embed"
-      allowfullscreen loading="lazy">
-    </iframe>
+  <div class="info-map reveal d1" id="mapWrap">
+    <div id="map"></div>
+    <div class="map-hint" id="mapHint">↓ Tap to explore</div>
   </div>
   <div class="reveal d2">
     <div class="info-label">Hours</div>
@@ -838,9 +1136,9 @@ header::before{
 <nav class="float-nav">
   <span class="float-nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;">C.</span>
   <a href="#team" class="nav-active">Team</a>
+  <a href="#results">Results</a>
   <a href="#services">Services</a>
   <a href="#about">About</a>
-  <a href="https://n802209.alteg.io" class="nav-book">Book Now</a>
 </nav>
 
 <!-- SCROLL TOP -->
@@ -858,7 +1156,7 @@ window.addEventListener('scroll',()=>{
 });
 
 // Scroll spy
-const sections = ['team','services','about'];
+const sections = ['team','results','services','about'];
 const navLinks = document.querySelectorAll('.float-nav a:not(.nav-book)');
 const spyObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
@@ -910,6 +1208,36 @@ const counterObs = new IntersectionObserver(entries=>{
   });
 },{threshold:0.5});
 document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
+
+// Before/After card flip
+document.querySelectorAll('.ba-card-wrap').forEach(card=>{
+  card.addEventListener('click',()=>card.classList.toggle('ba-flipped'));
+});
+
+// Leaflet map
+const COORDS = [43.6549, -79.4232];
+const map = L.map('map',{
+  center:COORDS, zoom:14,
+  zoomControl:false, scrollWheelZoom:false,
+  dragging:false, touchZoom:false,
+  doubleClickZoom:false, boxZoom:false, keyboard:false
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+  maxZoom:19
+}).addTo(map);
+const dotIcon = L.divIcon({html:'<div class="map-dot"></div>',className:'',iconSize:[14,14],iconAnchor:[7,7]});
+L.marker(COORDS,{icon:dotIcon}).addTo(map);
+
+let flown = false;
+document.getElementById('mapWrap').addEventListener('click',()=>{
+  if(flown) return;
+  flown = true;
+  const hint = document.getElementById('mapHint');
+  hint.style.opacity = '0';
+  hint.style.animation = 'none';
+  map.flyTo(COORDS, 18, {duration:2.2, easeLinearity:0.2});
+  setTimeout(()=>{ map.dragging.enable(); map.scrollWheelZoom.enable(); },2400);
+});
 </script>
 </body>
 </html>
