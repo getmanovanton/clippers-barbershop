@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clippers Barbershop — Toronto</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#EFEFED;
+  --ink:#111110;
+  --mid:#777772;
+  --light:#D8D8D5;
+  --white:#FAFAF8;
+  --pill:#1C1C1A;
+  --pill-text:rgba(255,255,255,0.75);
+  --accent:#111110;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  padding-bottom:100px;
+}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 28px;
+  margin:12px 16px 0;
+  border-radius:20px;
+  left:0;right:0;
+
+  /* Liquid Glass */
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.38) 0%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0.10) 100%
+  );
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.06);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.06);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.6) inset,
+    0 -1px 0 rgba(0,0,0,0.06) inset,
+    0 8px 32px rgba(0,0,0,0.08),
+    0 2px 8px rgba(0,0,0,0.05);
+}
+header::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:20px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.5) 0%,
+    rgba(255,255,255,0) 40%
+  );
+  pointer-events:none;
+}
+.logo{
+  display:inline-flex;
+  align-items:center;
+  text-decoration:none;
+}
+.logo-main{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;letter-spacing:.22em;color:var(--ink);
+}
+.logo-sub{
+  font-family:'DM Sans',sans-serif;
+  font-size:7px;letter-spacing:.45em;font-weight:500;
+  text-transform:uppercase;color:var(--ink);
+}
+.header-right{
+  display:flex;align-items:center;gap:12px;
+}
+.header-loc{
+  font-size:11px;font-weight:500;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--mid);
+}
+.header-book{
+  display:inline-block;
+  padding:9px 22px;font-size:11px;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;
+  text-decoration:none;border-radius:12px;
+  color:var(--ink);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0.25) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.8) inset,
+    0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(12px);
+  transition: all .25s;
+}
+.header-book:hover{
+  background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
+  box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset, 0 6px 20px rgba(0,0,0,0.13);
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 32px 56px;
+  padding-top:100px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-photo{
+  position:absolute;top:0;right:0;
+  width:55%;height:100%;
+  object-fit:cover;
+  z-index:1;
+  opacity:.92;
+  -webkit-mask-image:linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0,0,0,0.2) 12%,
+    rgba(0,0,0,0.7) 25%,
+    black 45%
+  );
+  mask-image:linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0,0,0,0.2) 12%,
+    rgba(0,0,0,0.7) 25%,
+    black 45%
+  );
+}
+.hero-photo-fade{display:none;}
+.hero-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(120px,20vw,280px);
+  line-height:.88;
+  letter-spacing:-.01em;
+  color:var(--ink);
+  position:relative;z-index:2;
+  opacity:0;
+  animation:slideUp .9s cubic-bezier(.16,1,.3,1) forwards .1s;
+}
+.hero-big .line2{color:transparent;-webkit-text-stroke:2px var(--ink);}
+.hero-sub{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-top:32px;position:relative;z-index:2;
+  opacity:0;animation:fadeIn .8s ease forwards .6s;
+}
+.hero-desc{
+  font-size:14px;line-height:1.7;color:var(--mid);
+  max-width:280px;font-weight:300;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--ink);color:var(--white);
+  padding:16px 36px;font-size:12px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  text-decoration:none;border-radius:2px;
+  transition:background .25s,gap .25s;
+}
+.hero-cta:hover{background:#333;gap:16px}
+.hero-cta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0}
+
+/* score badge like awwwards */
+.hero-badge{
+  position:absolute;top:120px;right:32px;
+  display:flex;flex-direction:column;align-items:center;
+  background:var(--ink);color:var(--white);
+  padding:16px 14px;border-radius:3px;
+  opacity:0;animation:fadeIn .8s ease forwards 1s;
+  z-index:2;
+}
+.badge-score{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1}
+.badge-label{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
+.badge-sub{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:2px}
+
+/* big background number */
+.hero-bg-num{
+  position:absolute;bottom:-40px;right:-20px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:40vw;line-height:1;
+  color:rgba(17,17,16,.05);
+  pointer-events:none;z-index:1;
+}
+
+/* ── DIVIDER ── */
+.divider{
+  height:1px;background:var(--light);margin:0 32px;
+}
+
+/* ── BARBERS ── */
+.barbers{padding:80px 32px}
+.section-meta{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:48px;
+}
+.section-label{
+  font-size:10px;font-weight:500;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--mid);
+}
+.section-count{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:48px;color:var(--light);line-height:1;
+}
+.barbers-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  max-width:860px;margin:0 auto;
+}
+/* flip wrapper */
+.barber-card-wrap{
+  perspective:1200px;
+  height:420px;
+  cursor:pointer;
+}
+.barber-card-inner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transform:rotateY(180deg);
+  transition:transform 1.6s cubic-bezier(.16,1,.3,1);
+  border-radius:20px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.18);
+}
+.barber-card-wrap.card-visible .barber-card-inner{
+  transform:rotateY(0deg);
+}
+.barber-card-wrap.card-visible:hover .barber-card-inner{
+  transform:rotateY(0deg) translateY(-8px);
+  box-shadow:0 28px 64px rgba(0,0,0,0.25);
+}
+/* faces */
+.barber-card-front,
+.barber-card-back{
+  position:absolute;inset:0;
+  border-radius:20px;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+}
+/* BACK — рубашка */
+.barber-card-back{
+  transform:rotateY(180deg);
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+.barber-card-back::before{
+  content:'';position:absolute;inset:14px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;
+}
+.barber-card-back-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:.2em;
+  color:rgba(255,255,255,0.12);
+}
+/* FRONT */
+.barber-card-front{ background:#111; }
+.barber-card-photo{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:top;
+  transition:transform .7s cubic-bezier(.16,1,.3,1);
+}
+.barber-card-wrap:hover .barber-card-photo{transform:scale(1.06);}
+.barber-card-front::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.1) 50%,transparent 100%);
+}
+.barber-card-body{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  padding:20px 22px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.06) 100%);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-top:1px solid rgba(255,255,255,0.18);
+  border-radius:0 0 20px 20px;
+  transform:translateY(calc(100% - 78px));
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.barber-card-wrap:hover .barber-card-body{transform:translateY(0);}
+.barber-role{
+  font-size:9px;font-weight:600;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:3px;
+}
+.barber-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px;letter-spacing:.03em;color:#fff;line-height:1;
+}
+.barber-stars{
+  color:#fff;font-size:10px;letter-spacing:2px;
+  margin-top:10px;margin-bottom:10px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .35s .1s, transform .35s .1s;
+}
+.barber-card-wrap:hover .barber-stars{opacity:1;transform:translateY(0);}
+.barber-bio{
+  font-size:12px;line-height:1.6;color:rgba(255,255,255,0.65);
+  font-weight:300;margin-bottom:14px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .35s .15s, transform .35s .15s;
+}
+.barber-card-wrap:hover .barber-bio{opacity:1;transform:translateY(0);}
+.barber-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.95);color:var(--ink);
+  padding:10px 20px;font-size:10px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  text-decoration:none;border-radius:100px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .35s .2s, transform .35s .2s, background .25s, box-shadow .25s;
+}
+.barber-card-wrap:hover .barber-btn{opacity:1;transform:translateY(0);}
+.barber-btn:hover{
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(255,255,255,0.5);
+}
+
+/* ── SERVICES ── */
+.services{padding:80px 32px;background:var(--white)}
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;margin-top:48px;
+}
+.srv{
+  border-radius:20px;overflow:hidden;
+  position:relative;height:340px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.08);
+  transition:transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s;
+  cursor:default;
+}
+.srv:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 52px rgba(0,0,0,0.15);
+}
+.srv-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform .7s cubic-bezier(.16,1,.3,1);
+}
+.srv:hover .srv-img{transform:scale(1.08);}
+.srv::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);
+}
+.srv-body{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  padding:20px 22px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.06) 100%);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-top:1px solid rgba(255,255,255,0.2);
+  border-radius:0 0 20px 20px;
+  transform:translateY(calc(100% - 72px));
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.srv:hover .srv-body{transform:translateY(0);}
+.srv-num{
+  font-family:'Bebas Neue',sans-serif;font-size:11px;
+  color:rgba(255,255,255,0.45);letter-spacing:.2em;margin-bottom:2px;
+}
+.srv-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;color:#fff;letter-spacing:.02em;line-height:1;
+}
+.srv-price{
+  font-size:12px;font-weight:400;color:rgba(255,255,255,0.65);
+  margin-top:10px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .35s .1s, transform .35s .1s;
+}
+.srv:hover .srv-price{opacity:1;transform:translateY(0);}
+
+/* ── INFO ── */
+.info{
+  padding:80px 32px;
+  display:grid;grid-template-columns:1fr 2fr 1fr;gap:40px;
+  align-items:center;
+}
+.info-map{
+  height:320px;border-radius:20px;overflow:hidden;
+  box-shadow:0 12px 40px rgba(0,0,0,0.1);
+}
+.info-map iframe{width:100%;height:100%;border:0;display:block;}
+.info-label{
+  font-size:10px;font-weight:500;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--mid);margin-bottom:20px;
+}
+.info-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,5vw,64px);
+  color:var(--ink);line-height:1.1;margin-bottom:16px;
+}
+.info-text{font-size:14px;color:var(--mid);line-height:1.8;font-weight:300}
+.hours-list{list-style:none}
+.hours-list li{
+  display:flex;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--light);
+  font-size:13px;
+}
+.hours-list li span:first-child{color:var(--mid);font-weight:300}
+.hours-list li span:last-child{font-weight:500;color:var(--ink)}
+
+/* ── MAP ── */
+.map-section{
+  position:relative;height:480px;overflow:hidden;
+}
+#map{
+  width:100%;height:100%;
+  filter:contrast(1.05) brightness(0.95);
+}
+.map-card{
+  position:absolute;top:50%;left:56px;
+  transform:translateY(-50%);
+  z-index:1000;
+  padding:32px 36px;
+  border-radius:20px;
+  background:linear-gradient(145deg,rgba(255,255,255,0.52) 0%,rgba(255,255,255,0.22) 100%);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 2px 0 rgba(255,255,255,0.7) inset, 0 16px 48px rgba(0,0,0,0.12);
+  min-width:240px;
+}
+.map-card-label{
+  font-size:9px;font-weight:600;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--mid);margin-bottom:8px;
+}
+.map-card-addr{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px;line-height:1.05;color:var(--ink);margin-bottom:16px;
+}
+.map-card-hours{list-style:none;}
+.map-card-hours li{
+  display:flex;justify-content:space-between;gap:24px;
+  font-size:12px;padding:6px 0;
+  border-bottom:1px solid rgba(0,0,0,0.07);
+}
+.map-card-hours li span:first-child{color:var(--mid);font-weight:300}
+.map-card-hours li span:last-child{font-weight:500;color:var(--ink)}
+
+/* ── STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  background:var(--bg);
+  padding:48px 32px;
+}
+.stat{
+  padding:36px 32px;
+  text-align:center;
+  border-radius:20px;
+  background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.2) 100%);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.8) inset,
+    0 8px 24px rgba(0,0,0,0.06);
+  transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+}
+.stat:hover{
+  transform:translateY(-4px);
+  box-shadow:0 2px 0 rgba(255,255,255,0.8) inset, 0 16px 40px rgba(0,0,0,0.1);
+}
+.stat-n{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,6vw,80px);
+  line-height:1;color:var(--ink);
+  display:flex;align-items:baseline;justify-content:center;gap:2px;
+}
+.stat-suffix{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,3vw,40px);
+  color:var(--mid);
+}
+.stat-l{
+  font-size:10px;font-weight:500;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--mid);
+  margin-top:8px;
+}
+
+/* ── BOOK CTA ── */
+.book-section{
+  padding:100px 32px;text-align:center;
+  border-top:1px solid var(--light);
+  position:relative;overflow:hidden;
+}
+.book-bg{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(80px,18vw,200px);
+  color:rgba(17,17,16,.04);white-space:nowrap;pointer-events:none;
+}
+.book-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,8vw,100px);
+  line-height:.95;color:var(--ink);
+  margin-bottom:32px;position:relative;z-index:1;
+}
+.book-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--ink);color:var(--white);
+  padding:20px 52px;font-size:12px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;
+  text-decoration:none;border-radius:2px;
+  transition:background .25s,gap .3s;
+  position:relative;z-index:1;
+}
+.book-btn:hover{background:#333;gap:18px}
+
+/* ── FLOATING BOTTOM NAV ── */
+.float-nav{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  z-index:500;
+  display:flex;align-items:center;gap:4px;
+  border-radius:100px;
+  padding:6px 6px 6px 20px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.28) 0%,rgba(255,255,255,0.12) 100%);
+  backdrop-filter:blur(28px) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter:blur(28px) saturate(180%) brightness(1.05);
+  border:1px solid rgba(255,255,255,0.45);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.55) inset,
+    0 -1px 0 rgba(0,0,0,0.06) inset,
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 8px rgba(0,0,0,0.06);
+}
+.float-nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px;letter-spacing:.1em;
+  color:var(--ink);margin-right:8px;
+}
+.float-nav a{
+  font-size:11px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);
+  text-decoration:none;padding:8px 16px;border-radius:100px;
+  position:relative;white-space:nowrap;
+  border:1px solid transparent;
+  transition:border-color .3s, background .2s, color .2s;
+}
+.float-nav a::after{
+  content:'';
+  position:absolute;bottom:6px;left:16px;right:16px;
+  height:1px;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s cubic-bezier(.16,1,.3,1);
+}
+.float-nav a:hover::after{ transform:scaleX(1); }
+.float-nav a:hover{ background:rgba(255,255,255,.2); }
+.float-nav .nav-active{
+  background:rgba(255,255,255,.3);
+}
+.float-nav .nav-active::after{ transform:scaleX(1); }
+.float-nav .nav-book{
+  background:linear-gradient(135deg,rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.4) 100%);
+  color:var(--ink) !important;
+  font-weight:600;padding:10px 20px;
+  border:1px solid rgba(255,255,255,0.8);
+  box-shadow:0 2px 0 rgba(255,255,255,0.9) inset, 0 3px 10px rgba(0,0,0,0.08);
+  transition:all .2s;
+}
+.float-nav .nav-book::after{ display:none !important; }
+.float-nav .nav-book:hover{
+  background:linear-gradient(135deg,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.6) 100%);
+}
+
+/* ── SCROLL TO TOP ── */
+.scroll-top{
+  position:fixed;bottom:24px;left:24px;z-index:500;
+  width:44px;height:44px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.35) 0%,rgba(255,255,255,0.15) 100%);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.5);
+  box-shadow:0 2px 0 rgba(255,255,255,0.6) inset, 0 6px 20px rgba(0,0,0,0.1);
+  color:var(--ink);
+  border-radius:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:all .2s,opacity .3s;
+  opacity:0;pointer-events:none;
+}
+.scroll-top.visible{opacity:1;pointer-events:all}
+.scroll-top:hover{background:linear-gradient(135deg,rgba(255,255,255,0.5) 0%,rgba(255,255,255,0.25) 100%);}
+.scroll-top:hover span{animation:arrowBounce .6s ease infinite;}
+@keyframes arrowBounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{ width:6px; }
+::-webkit-scrollbar-track{ background:var(--light); }
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(17,17,16,0.5) 0%,rgba(17,17,16,0.25) 100%);
+  border-radius:100px;
+  border:1px solid rgba(255,255,255,0.35);
+}
+::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,rgba(17,17,16,0.75) 0%,rgba(17,17,16,0.45) 100%);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(60px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}to{opacity:1}
+}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+/* barber card entrance */
+.barber-card-wrap{
+  opacity:0;
+  transform:translateY(60px) scale(0.94);
+  clip-path:inset(0 0 100% 0 round 24px);
+  transition:
+    opacity .7s cubic-bezier(.16,1,.3,1),
+    transform .7s cubic-bezier(.16,1,.3,1),
+    clip-path .7s cubic-bezier(.16,1,.3,1);
+}
+.barber-card-wrap.card-visible{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  clip-path:inset(0 0 0% 0 round 24px);
+}
+.barber-card-wrap:nth-child(1){transition-delay:0s}
+.barber-card-wrap:nth-child(2){transition-delay:0.15s}
+.barber-card-wrap:nth-child(3){transition-delay:0.3s}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .header-loc{display:none}
+  .hero-big{font-size:clamp(80px,22vw,160px)}
+  .hero-badge{display:none}
+  .hero-sub{flex-direction:column;gap:24px;align-items:flex-start}
+  .services-grid{grid-template-columns:1fr}
+  .info{grid-template-columns:1fr}
+  .info-map{height:240px;}
+  .barbers-grid{grid-template-columns:1fr}
+  .float-nav{padding:6px 6px 6px 14px}
+  .float-nav-logo{display:none}
+  .float-nav a{padding:8px 12px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="#" class="logo">
+    <img src="logo.svg" alt="Clippers Barbershop" style="height:54px;width:auto;display:block;">
+  </a>
+  <div class="header-right">
+    <span class="header-loc">884 College St · Toronto</span>
+    <a href="https://n802209.alteg.io" class="header-book">Book Now</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="hero-photo" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&q=80&fit=crop" alt="Barbershop">
+  <div class="hero-photo-fade"></div>
+  <div class="hero-bg-num">✂</div>
+  <div class="hero-badge">
+    <div class="badge-score">3</div>
+    <div class="badge-label">Barbers</div>
+    <div class="badge-sub">College St</div>
+  </div>
+  <h1 class="hero-big">
+    CLIP<br>
+    <span class="line2">PERS</span>
+  </h1>
+  <div class="hero-sub">
+    <p class="hero-desc">Three master barbers on College Street. No compromises, no waiting — just book online and walk in ready.</p>
+    <a href="https://n802209.alteg.io" class="hero-cta">
+      Book Your Cut
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BARBERS -->
+<section class="barbers" id="team">
+  <div class="section-meta reveal">
+    <span class="section-label">The Team</span>
+    <span class="section-count">03</span>
+  </div>
+  <div class="barbers-grid" id="barbersGrid">
+    <div class="barber-card-wrap">
+      <div class="barber-card-inner">
+        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
+        <div class="barber-card-front">
+          <img class="barber-card-photo" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=600&q=80&fit=crop&crop=top" alt="Jack">
+          <div class="barber-card-body">
+            <div class="barber-role">Top Barber</div>
+            <div class="barber-name">Jack</div>
+            <div class="barber-stars">★★★★★ <span style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:300">245 reviews</span></div>
+            <p class="barber-bio">Our most reviewed barber. Fades, tapers, classics — whatever you need, Jack delivers every time.</p>
+            <a href="https://n802209.alteg.io" class="barber-btn">Book Jack →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="barber-card-wrap">
+      <div class="barber-card-inner">
+        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
+        <div class="barber-card-front">
+          <img class="barber-card-photo" src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=80&fit=crop&crop=top" alt="David">
+          <div class="barber-card-body">
+            <div class="barber-role">Barber</div>
+            <div class="barber-name">David</div>
+            <div class="barber-stars">★★★★★ <span style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:300">19 reviews</span></div>
+            <p class="barber-bio">Precision cuts and clean lines. David brings calm energy and consistent results to every chair.</p>
+            <a href="https://n802209.alteg.io" class="barber-btn">Book David →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="barber-card-wrap">
+      <div class="barber-card-inner">
+        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
+        <div class="barber-card-front">
+          <img class="barber-card-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&fit=crop&crop=top" alt="Dawa">
+          <div class="barber-card-body">
+            <div class="barber-role">Barber</div>
+            <div class="barber-name">Dawa</div>
+            <div class="barber-stars">★★★★★ <span style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:300">New & rising</span></div>
+            <p class="barber-bio">Fresh perspective, sharp technique. Dawa brings creativity and genuine care to every cut.</p>
+            <a href="https://n802209.alteg.io" class="barber-btn">Book Dawa →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="264">0</span><span class="stat-suffix">+</span></div>
+    <div class="stat-l">Five-Star Reviews</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="5">0</span><span class="stat-suffix">yr</span></div>
+    <div class="stat-l">On College St</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="3">0</span><span class="stat-suffix">+</span></div>
+    <div class="stat-l">Master Barbers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n"><span class="counter" data-target="7">0</span><span class="stat-suffix">d</span></div>
+    <div class="stat-l">Open Every Week</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-meta reveal">
+    <span class="section-label">Services</span>
+    <span class="section-count">06</span>
+  </div>
+  <div class="services-grid">
+    <div class="srv reveal">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80&fit=crop" alt="Classic Haircut">
+      <div class="srv-body"><div class="srv-num">— 01</div><div class="srv-name">Classic Haircut</div><div class="srv-price">from $35 · 45 min</div></div>
+    </div>
+    <div class="srv reveal d1">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80&fit=crop" alt="Fade">
+      <div class="srv-body"><div class="srv-num">— 02</div><div class="srv-name">Fade</div><div class="srv-price">from $40 · 45 min</div></div>
+    </div>
+    <div class="srv reveal d2">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80&fit=crop" alt="Beard Trim">
+      <div class="srv-body"><div class="srv-num">— 03</div><div class="srv-name">Beard Trim</div><div class="srv-price">from $20 · 20 min</div></div>
+    </div>
+    <div class="srv reveal">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80&fit=crop&crop=top" alt="Cut + Beard">
+      <div class="srv-body"><div class="srv-num">— 04</div><div class="srv-name">Cut + Beard</div><div class="srv-price">from $50 · 60 min</div></div>
+    </div>
+    <div class="srv reveal d1">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&q=80&fit=crop" alt="Hot Towel Shave">
+      <div class="srv-body"><div class="srv-num">— 05</div><div class="srv-name">Hot Towel Shave</div><div class="srv-price">from $35 · 30 min</div></div>
+    </div>
+    <div class="srv reveal d2">
+      <img class="srv-img" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80&fit=crop" alt="Kids Cut">
+      <div class="srv-body"><div class="srv-num">— 06</div><div class="srv-name">Kids Cut</div><div class="srv-price">from $25 · 30 min</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO -->
+<section class="info" id="about">
+  <div class="reveal">
+    <div class="info-label">Find Us</div>
+    <div class="info-big">884<br>College St<br>Toronto</div>
+    <p class="info-text">Walk-ins welcome.<br>Online booking recommended.</p>
+  </div>
+  <div class="info-map reveal d1">
+    <iframe
+      src="https://maps.google.com/maps?q=884+College+St,+Toronto,+ON&t=&z=16&ie=UTF8&iwloc=&output=embed"
+      allowfullscreen loading="lazy">
+    </iframe>
+  </div>
+  <div class="reveal d2">
+    <div class="info-label">Hours</div>
+    <ul class="hours-list">
+      <li><span>Monday – Friday</span><span>9am – 8pm</span></li>
+      <li><span>Saturday</span><span>10am – 7pm</span></li>
+      <li><span>Sunday</span><span>10am – 6pm</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- BOOK CTA -->
+<section class="book-section">
+  <div class="book-bg">BOOK</div>
+  <h2 class="book-title reveal">READY FOR<br>YOUR NEXT<br>CUT?</h2>
+  <a href="https://n802209.alteg.io" class="book-btn reveal d1">
+    Book Appointment →
+  </a>
+</section>
+
+<!-- FLOATING BOTTOM NAV -->
+<nav class="float-nav">
+  <span class="float-nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;">C.</span>
+  <a href="#team" class="nav-active">Team</a>
+  <a href="#services">Services</a>
+  <a href="#about">About</a>
+  <a href="https://n802209.alteg.io" class="nav-book">Book Now</a>
+</nav>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><span>↑</span></button>
+
+<script>
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+const btn = document.getElementById('scrollTop');
+window.addEventListener('scroll',()=>{
+  btn.classList.toggle('visible', window.scrollY > 300);
+});
+
+// Scroll spy
+const sections = ['team','services','about'];
+const navLinks = document.querySelectorAll('.float-nav a:not(.nav-book)');
+const spyObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(a=>a.classList.remove('nav-active'));
+      const active = document.querySelector(`.float-nav a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('nav-active');
+    }
+  });
+},{threshold:0.4});
+sections.forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) spyObs.observe(el);
+});
+
+// Barber cards entrance
+const cardObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.barber-card-wrap').forEach((c,i)=>{
+        setTimeout(()=>c.classList.add('card-visible'), i*350);
+      });
+      cardObs.disconnect();
+    }
+  });
+},{threshold:0.2});
+const grid = document.getElementById('barbersGrid');
+if(grid) cardObs.observe(grid);
+
+// Counters
+function animateCounter(el){
+  const target = +el.dataset.target;
+  const duration = 1600;
+  const start = performance.now();
+  const ease = t => t<0.5 ? 2*t*t : -1+(4-2*t)*t;
+  (function tick(now){
+    const t = Math.min((now-start)/duration, 1);
+    el.textContent = Math.floor(ease(t)*target);
+    if(t<1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  })(start);
+}
+const counterObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      animateCounter(e.target);
+      counterObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
+</script>
+</body>
+</html>
