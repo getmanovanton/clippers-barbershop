@@ -250,11 +250,14 @@ header::before{
   border-radius:20px;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
   overflow:hidden;
 }
 /* BACK — entrance placeholder */
 .barber-card-back{
-  transform:rotateY(180deg);
+  transform:rotateY(180deg) translateZ(0);
+  -webkit-transform:rotateY(180deg) translateZ(0);
   background:var(--ink);
   display:flex;align-items:center;justify-content:center;
 }
@@ -309,7 +312,8 @@ header::before{
   position:absolute;inset:0;border-radius:20px;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-  transform:rotateY(180deg) translateZ(1px);
+  transform:rotateY(180deg) translateZ(2px);
+  -webkit-transform:rotateY(180deg) translateZ(2px);
   background:var(--ink);
   display:flex;flex-direction:column;justify-content:center;
   padding:28px 26px;
