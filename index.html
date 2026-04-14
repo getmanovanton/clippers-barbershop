@@ -833,6 +833,84 @@ header::before{
   .ba-grid .ba-card-wrap:last-child{display:none}
 }
 
+/* ── PRELOADER ── */
+.preloader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  transition:opacity 0.6s cubic-bezier(0.23,1,0.32,1), visibility 0.6s;
+}
+.preloader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.barber-pole{
+  width:44px;height:140px;
+  border-radius:22px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 0 0 3px rgba(255,255,255,0.9), 0 8px 32px rgba(0,0,0,0.15);
+}
+.pole-cap{
+  position:absolute;left:0;right:0;height:22px;z-index:2;
+  background:linear-gradient(180deg,#e8e8e6 0%,#c8c8c5 100%);
+  border-radius:22px 22px 0 0;
+}
+.pole-cap.bottom{top:auto;bottom:0;border-radius:0 0 22px 22px;
+  background:linear-gradient(180deg,#c8c8c5 0%,#e8e8e6 100%);
+}
+.pole-stripes{
+  position:absolute;
+  top:-100%;left:-20%;
+  width:140%;height:300%;
+  background:repeating-linear-gradient(
+    -55deg,
+    #C8102E   0px, #C8102E  18px,
+    #FAFAF8  18px, #FAFAF8  34px,
+    #002868  34px, #002868  52px,
+    #FAFAF8  52px, #FAFAF8  68px
+  );
+  animation:pole-spin 0.9s linear infinite;
+}
+@keyframes pole-spin{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(68px)}
+}
+.preloader-text{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:14px;letter-spacing:.35em;
+  color:var(--mid);
+}
+
+/* ── GALLERY ── */
+.gallery{padding:80px 32px;background:var(--bg);}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-auto-rows:220px;
+  gap:12px;
+}
+.gl{
+  border-radius:16px;overflow:hidden;position:relative;
+  cursor:pointer;
+}
+.gl.tall{grid-row:span 2;}
+.gl img{
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  display:block;
+}
+@media(hover:hover) and (pointer:fine){
+  .gl:hover img{transform:scale(1.06);}
+  .gl:hover .gl-overlay{opacity:1;}
+}
+.gl-overlay{
+  position:absolute;inset:0;
+  background:rgba(17,17,16,0.28);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;
+  transition:opacity 0.25s cubic-bezier(0.23,1,0.32,1);
+}
+.gl-overlay svg{width:28px;height:28px;stroke:#fff;stroke-width:1.5;fill:none;}
+
 /* ── MID CTA ── */
 .mid-cta{
   display:inline-block;
@@ -939,6 +1017,9 @@ header::before{
   /* Reviews */
   .reviews{padding:48px 20px}
   .reviews-grid{grid-template-columns:1fr;gap:14px}
+  .gallery{padding:48px 20px}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px;gap:8px}
+  .gl.tall{grid-row:span 2}
 
   /* Info / Find Us */
   .info{padding:48px 20px;grid-template-columns:1fr;gap:28px}
@@ -960,6 +1041,16 @@ header::before{
 </style>
 </head>
 <body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+  <div class="barber-pole">
+    <div class="pole-cap"></div>
+    <div class="pole-stripes"></div>
+    <div class="pole-cap bottom"></div>
+  </div>
+  <span class="preloader-text">Clippers</span>
+</div>
 
 <!-- HEADER -->
 <header>
@@ -1222,6 +1313,48 @@ header::before{
   </div>
 </section>
 
+<!-- GALLERY -->
+<section class="gallery">
+  <p class="section-label reveal">Portfolio</p>
+  <h2 class="section-title reveal d1">OUR WORK</h2>
+  <div class="gallery-grid">
+
+    <div class="gl tall reveal">
+      <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d1">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d2">
+      <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d1">
+      <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d2">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80&fit=crop&crop=top" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl tall reveal">
+      <img src="https://images.unsplash.com/photo-1567894340315-735d7c361db0?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d1">
+      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+    <div class="gl reveal d2">
+      <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80&fit=crop" alt="Haircut">
+      <div class="gl-overlay"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    </div>
+
+  </div>
+</section>
+
 <!-- INFO -->
 <section class="info" id="about">
   <div class="reveal">
@@ -1265,6 +1398,13 @@ header::before{
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><span>↑</span></button>
 
 <script>
+// Preloader
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('preloader').classList.add('hidden');
+  }, 1800);
+});
+
 const obs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
 },{threshold:.1});
