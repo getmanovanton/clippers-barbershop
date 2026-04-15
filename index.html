@@ -678,6 +678,7 @@ header::before{
 .float-nav .nav-book:hover{
   background:linear-gradient(135deg,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.6) 100%);
 }
+.float-nav .nav-book:active{transform:scale(0.95);}
 
 /* ── SCROLL TO TOP ── */
 .scroll-top{
@@ -1352,9 +1353,10 @@ header::before{
   .scroll-top{display:none}
 
   /* Float nav */
-  .float-nav{padding:5px 4px 5px 12px;gap:0}
+  .float-nav{padding:5px 5px;gap:2px;border-radius:20px;}
   .float-nav-logo{display:none}
-  .float-nav a{padding:10px 11px;font-size:10px;letter-spacing:.04em;min-height:40px;display:flex;align-items:center;}
+  .float-nav a{padding:9px 10px;font-size:9.5px;letter-spacing:.03em;min-height:40px;display:flex;align-items:center;border-radius:14px;}
+  .float-nav .nav-book{padding:9px 14px;}
 }
 </style>
 </head>
@@ -1573,7 +1575,7 @@ header::before{
 </section>
 
 <!-- PRICING -->
-<section class="pricing">
+<section class="pricing" id="pricing">
   <p class="section-label reveal">Transparent pricing</p>
   <h2 class="section-title reveal d1">PRICE LIST</h2>
   <div class="pricing-cols">
@@ -1719,7 +1721,7 @@ header::before{
 </section>
 
 <!-- GALLERY -->
-<section class="gallery">
+<section class="gallery" id="gallery">
   <p class="section-label reveal">Portfolio</p>
   <h2 class="section-title reveal d1">OUR WORK</h2>
   <div class="gallery-grid">
@@ -1828,9 +1830,11 @@ header::before{
 <nav class="float-nav">
   <span class="float-nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;">C.</span>
   <a href="#team" class="nav-active">Team</a>
-  <a href="#results">Results</a>
   <a href="#services">Services</a>
+  <a href="#pricing">Prices</a>
+  <a href="#gallery">Gallery</a>
   <a href="#about">About</a>
+  <a href="https://n802209.alteg.io" class="nav-book" target="_blank">Book</a>
 </nav>
 
 <!-- SCROLL TOP -->
@@ -1855,7 +1859,7 @@ window.addEventListener('scroll',()=>{
 });
 
 // Scroll spy
-const sections = ['team','results','services','about'];
+const sections = ['team','services','pricing','gallery','about'];
 const navLinks = document.querySelectorAll('.float-nav a:not(.nav-book)');
 const spyObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
