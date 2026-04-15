@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clippers Barbershop — Toronto</title>
+<meta name="description" content="Premium cuts & fades in Little Italy since 2019. Three master barbers at 884 College St, Toronto. Book online.">
+<meta property="og:title" content="Clippers Barbershop — Toronto">
+<meta property="og:description" content="Premium cuts & fades in Little Italy. Three master barbers at 884 College St. Book online.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1200&q=80&fit=crop">
+<meta property="og:type" content="business.business">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -583,6 +589,9 @@ header::before{
   text-transform:uppercase;color:var(--mid);
   margin-top:8px;
 }
+
+/* srv-more button — desktop hidden, mobile shown */
+.srv-more-wrap{display:none}
 
 /* ── BOOK CTA ── */
 .book-section{
@@ -1278,8 +1287,8 @@ header::before{
 
   /* Before/After */
   .ba-section{padding:48px 20px}
-  .ba-grid{grid-template-columns:1fr 1fr;gap:12px}
-  .ba-grid .ba-card-wrap:last-child{display:none}
+  .ba-grid{grid-template-columns:1fr;gap:16px;max-width:400px;margin-left:auto;margin-right:auto}
+  .ba-grid .ba-card-wrap:last-child{display:block}
 
   /* Services */
   .services{padding:48px 20px}
@@ -1287,6 +1296,19 @@ header::before{
   .srv{height:260px}
   .srv-body{transform:translateY(0) !important}
   .srv-price{opacity:1 !important;transform:translateY(0) !important}
+  .srv-extra{display:none}
+  .srv-extra.srv-shown{display:block}
+  .srv-more-wrap{display:block;text-align:center;margin-top:20px}
+  .srv-more-btn{
+    padding:14px 32px;font-size:11px;font-weight:600;letter-spacing:.18em;
+    text-transform:uppercase;border-radius:14px;border:none;cursor:pointer;
+    color:var(--ink);
+    background:linear-gradient(135deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.25) 100%);
+    backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.65);
+    box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 6px 20px rgba(0,0,0,0.09);
+    transition:transform 160ms cubic-bezier(0.23,1,0.32,1), box-shadow .2s;
+  }
+  .srv-more-btn:active{transform:scale(0.97)}
 
   /* Stats */
   .stats{display:none}
@@ -1532,18 +1554,21 @@ header::before{
       <img loading="lazy" class="srv-img" src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80&fit=crop" alt="Beard Trim">
       <div class="srv-body"><div class="srv-num">— 03</div><div class="srv-name">Beard Trim</div><div class="srv-price">from $20 · 20 min</div></div>
     </div>
-    <div class="srv reveal">
+    <div class="srv reveal srv-extra">
       <img loading="lazy" class="srv-img" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80&fit=crop&crop=top" alt="Cut + Beard">
       <div class="srv-body"><div class="srv-num">— 04</div><div class="srv-name">Cut + Beard</div><div class="srv-price">from $50 · 60 min</div></div>
     </div>
-    <div class="srv reveal d1">
+    <div class="srv reveal d1 srv-extra">
       <img loading="lazy" class="srv-img" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&q=80&fit=crop" alt="Hot Towel Shave">
       <div class="srv-body"><div class="srv-num">— 05</div><div class="srv-name">Hot Towel Shave</div><div class="srv-price">from $35 · 30 min</div></div>
     </div>
-    <div class="srv reveal d2">
+    <div class="srv reveal d2 srv-extra">
       <img loading="lazy" class="srv-img" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80&fit=crop" alt="Kids Cut">
       <div class="srv-body"><div class="srv-num">— 06</div><div class="srv-name">Kids Cut</div><div class="srv-price">from $25 · 30 min</div></div>
     </div>
+  </div>
+  <div class="srv-more-wrap" id="srvMoreWrap">
+    <button class="srv-more-btn" id="srvMoreBtn">All services ↓</button>
   </div>
 </section>
 
@@ -1903,6 +1928,18 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
     card.classList.add('card-seen');
   });
 });
+
+// Services "show more" on mobile
+var srvMoreBtn = document.getElementById('srvMoreBtn');
+if(srvMoreBtn){
+  srvMoreBtn.addEventListener('click',function(){
+    document.querySelectorAll('.srv-extra').forEach(function(el){
+      el.classList.add('srv-shown');
+      obs.observe(el); // trigger reveal animation
+    });
+    document.getElementById('srvMoreWrap').style.display='none';
+  });
+}
 
 // Before/After card flip
 document.querySelectorAll('.ba-card-wrap').forEach(card=>{
