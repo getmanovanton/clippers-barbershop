@@ -96,10 +96,12 @@ header::before{
   box-shadow:0 6px 20px rgba(0,0,0,0.32);
 }
 .header-book:active{transform:scale(0.97)}
-header.header-hidden{
-  transform:translateY(calc(-100% - 20px));
-  opacity:0;
-  pointer-events:none;
+@media(max-width:768px){
+  header.header-hidden{
+    transform:translateY(calc(-100% - 20px));
+    opacity:0;
+    pointer-events:none;
+  }
 }
 
 /* ── HERO ── */
