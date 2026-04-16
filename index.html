@@ -12,8 +12,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -444,37 +442,19 @@ header::before{
 .info-map{
   height:320px;border-radius:20px;overflow:hidden;
   box-shadow:0 12px 40px rgba(0,0,0,0.1);
-  position:relative;cursor:pointer;
+  position:relative;
   isolation:isolate;
 }
-#map{width:100%;height:100%;}
-.leaflet-container{background:#EFEFED;}
-/* hide leaflet attribution to keep it clean */
-.leaflet-control-attribution{display:none}
-.leaflet-control-zoom{display:none}
-/* custom marker */
-.map-dot{
-  width:14px;height:14px;border-radius:50%;
-  background:var(--ink);
-  border:2px solid #fff;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
-  position:relative;
+.info-map iframe{
+  width:100%;height:100%;border:0;display:block;
+  filter:grayscale(1) contrast(1.05);
+  transition:filter 0.4s ease;
 }
-@keyframes map-ping{
-  0%{transform:scale(1);opacity:0.7}
-  70%{transform:scale(2.8);opacity:0}
-  100%{transform:scale(1);opacity:0}
-}
-.map-dot::after{
-  content:'';position:absolute;inset:-4px;
-  border-radius:50%;
-  border:1.5px solid var(--ink);
-  animation:map-ping 2s ease-out infinite;
-}
-/* hint overlay */
+.info-map:hover iframe{filter:grayscale(0.6) contrast(1.05);}
+/* "Open in Maps" link */
 .map-hint{
   position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
-  z-index:1000;pointer-events:none;
+  z-index:10;
   padding:7px 16px;border-radius:30px;
   font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;
   letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);
@@ -482,14 +462,9 @@ header::before{
   backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,0.6);
   box-shadow:0 2px 0 rgba(255,255,255,0.7) inset,0 4px 12px rgba(0,0,0,0.08);
-  transition:opacity 0.4s;
   white-space:nowrap;
+  text-decoration:none;
 }
-@keyframes hint-bob{
-  0%,100%{transform:translateX(-50%) translateY(0)}
-  50%{transform:translateX(-50%) translateY(-4px)}
-}
-.map-hint{animation:hint-bob 2s ease-in-out infinite;}
 .info-label{
   font-size:10px;font-weight:500;letter-spacing:.3em;
   text-transform:uppercase;color:var(--mid);margin-bottom:20px;
@@ -1738,9 +1713,15 @@ header::before{
     <div class="info-big">884<br>College St<br>Toronto</div>
     <p class="info-text">Walk-ins welcome.<br>Online booking recommended.</p>
   </div>
-  <div class="info-map reveal d1" id="mapWrap">
-    <div id="map"></div>
-    <div class="map-hint" id="mapHint">↓ Tap to explore</div>
+  <div class="info-map reveal d1">
+    <iframe
+      src="https://maps.google.com/maps?q=884+College+St,+Toronto,+ON,+Canada&z=16&output=embed"
+      loading="lazy"
+      allowfullscreen
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Clippers Barbershop on Google Maps"
+    ></iframe>
+    <a href="https://maps.google.com/?q=884+College+St,+Toronto,+ON" target="_blank" rel="noopener" class="map-hint">Open in Google Maps ↗</a>
   </div>
   <div class="reveal d2">
     <div class="info-label">Hours</div>
@@ -2060,30 +2041,6 @@ document.querySelectorAll('.ba-card-wrap').forEach(card=>{
   }, {passive:true});
 })();
 
-// Leaflet map
-const COORDS = [43.6549, -79.4232];
-const map = L.map('map',{
-  center:COORDS, zoom:14,
-  zoomControl:false, scrollWheelZoom:false,
-  dragging:false, touchZoom:false,
-  doubleClickZoom:false, boxZoom:false, keyboard:false
-});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-  maxZoom:19
-}).addTo(map);
-const dotIcon = L.divIcon({html:'<div class="map-dot"></div>',className:'',iconSize:[14,14],iconAnchor:[7,7]});
-L.marker(COORDS,{icon:dotIcon}).addTo(map);
-
-let flown = false;
-document.getElementById('mapWrap').addEventListener('click',()=>{
-  if(flown) return;
-  flown = true;
-  const hint = document.getElementById('mapHint');
-  hint.style.opacity = '0';
-  hint.style.animation = 'none';
-  map.flyTo(COORDS, 18, {duration:2.2, easeLinearity:0.2});
-  setTimeout(()=>{ map.dragging.enable(); map.scrollWheelZoom.enable(); },2400);
-});
 </script>
 </body>
 </html>
