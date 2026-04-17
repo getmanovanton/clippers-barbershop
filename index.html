@@ -601,9 +601,14 @@ header::before{
 .float-nav{
   position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(calc(100% + 24px));
   opacity:0;pointer-events:none;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .35s ease;
   z-index:500;
 }
 .float-nav.nav-visible{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;pointer-events:auto;
+}
+.float-nav.nav-spring{
   animation:nav-spring .75s forwards;
   pointer-events:auto;
   display:flex;align-items:center;gap:4px;
@@ -1918,16 +1923,29 @@ window.addEventListener('scroll',()=>{
   btn.classList.toggle('visible', window.scrollY > 300);
 });
 
-// Float nav: show after hero
+// Float nav: spring in after hero, smooth hide on scroll back
 (function(){
   const nav = document.querySelector('.float-nav');
   const hero = document.querySelector('.hero');
   if(!nav||!hero) return;
+  let shown = false;
   const onScroll = ()=>{
-    nav.classList.toggle('nav-visible', window.scrollY > hero.offsetHeight * 0.6);
+    const scrolled = window.scrollY;
+    const showAt = hero.offsetHeight * 0.6;
+    const hideAt = hero.offsetHeight * 0.3;
+    if(!shown && scrolled > showAt){
+      shown = true;
+      nav.classList.add('nav-spring');
+      nav.addEventListener('animationend', ()=>{
+        nav.classList.remove('nav-spring');
+        nav.classList.add('nav-visible');
+      }, {once:true});
+    } else if(shown && scrolled < hideAt){
+      shown = false;
+      nav.classList.remove('nav-visible');
+    }
   };
   window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
 })();
 
 // Scroll spy
