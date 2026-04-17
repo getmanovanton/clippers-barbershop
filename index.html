@@ -1360,7 +1360,7 @@ header::before{
   <p class="section-label reveal">The Team</p>
   <h2 class="section-title reveal d1">OUR BARBERS</h2>
   <div class="barbers-grid" id="barbersGrid">
-    <div class="barber-card-wrap">
+    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="Jack, Top Barber — press to see info">
       <div class="barber-card-inner">
         <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
         <div class="barber-card-front">
@@ -1381,7 +1381,7 @@ header::before{
         </div>
       </div>
     </div>
-    <div class="barber-card-wrap">
+    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="David, Barber — press to see info">
       <div class="barber-card-inner">
         <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
         <div class="barber-card-front">
@@ -1402,7 +1402,7 @@ header::before{
         </div>
       </div>
     </div>
-    <div class="barber-card-wrap">
+    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="Dawa, Barber — press to see info">
       <div class="barber-card-inner">
         <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
         <div class="barber-card-front">
@@ -1433,7 +1433,7 @@ header::before{
   <div class="ba-grid">
 
     <!-- Card 1 -->
-    <div class="ba-card-wrap">
+    <div class="ba-card-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="Haircut result 1 — press to reveal after">
       <div class="ba-card-inner">
         <div class="ba-card-front">
           <img loading="lazy" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80" alt="Before haircut 1">
@@ -1448,7 +1448,7 @@ header::before{
     </div>
 
     <!-- Card 2 -->
-    <div class="ba-card-wrap">
+    <div class="ba-card-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="Haircut result 2 — press to reveal after">
       <div class="ba-card-inner">
         <div class="ba-card-front">
           <img loading="lazy" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80" alt="Before haircut 2">
@@ -1463,7 +1463,7 @@ header::before{
     </div>
 
     <!-- Card 3 -->
-    <div class="ba-card-wrap">
+    <div class="ba-card-wrap" role="button" tabindex="0" aria-pressed="false" aria-label="Haircut result 3 — press to reveal after">
       <div class="ba-card-inner">
         <div class="ba-card-front">
           <img loading="lazy" src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80" alt="Before haircut 3">
@@ -1904,10 +1904,15 @@ document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
 
 // Barber card click-flip
 document.querySelectorAll('.barber-card-wrap').forEach(card=>{
-  card.addEventListener('click',()=>{
+  const toggle = ()=>{
     if(!card.classList.contains('card-visible')) return;
     card.classList.toggle('card-flipped');
     card.classList.add('card-seen');
+    card.setAttribute('aria-expanded', card.classList.contains('card-flipped') ? 'true' : 'false');
+  };
+  card.addEventListener('click', toggle);
+  card.addEventListener('keydown', e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
   });
 });
 
@@ -1925,9 +1930,18 @@ if(srvMoreBtn){
 
 // Before/After card flip
 document.querySelectorAll('.ba-card-wrap').forEach(card=>{
-  card.addEventListener('click',()=>{
+  const toggle = ()=>{
     card.classList.toggle('ba-flipped');
     card.classList.add('ba-seen');
+    const flipped = card.classList.contains('ba-flipped');
+    card.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+    card.setAttribute('aria-label', card.getAttribute('aria-label')
+      .replace(flipped ? 'reveal after' : 'reveal before', flipped ? 'reveal before' : 'reveal after')
+    );
+  };
+  card.addEventListener('click', toggle);
+  card.addEventListener('keydown', e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
   });
 });
 
