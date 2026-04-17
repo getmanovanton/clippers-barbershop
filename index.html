@@ -321,6 +321,8 @@ header::before{
   display:flex;flex-direction:column;justify-content:center;
   padding:28px 26px;
   overflow:hidden;
+  will-change:transform;
+  -webkit-font-smoothing:antialiased;
 }
 .barber-info-panel::before{
   content:'';position:absolute;inset:14px;
@@ -363,6 +365,11 @@ header::before{
 .barber-card-wrap.card-visible.card-flipped .barber-card-inner{
   transform:rotateY(180deg) !important;
 }
+/* suppress click-focus ring; keep keyboard-focus ring */
+.barber-card-wrap:focus{outline:none}
+.barber-card-wrap:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:22px}
+.ba-card-wrap:focus{outline:none}
+.ba-card-wrap:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:20px}
 @media(hover:hover) and (pointer:fine){
   .barber-card-wrap.card-visible:not(.card-flipped):hover .barber-card-inner{
     transform:rotateY(0deg) translateY(-6px);
