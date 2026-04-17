@@ -697,6 +697,10 @@ header::before{
 @keyframes fadeIn{
   from{opacity:0}to{opacity:1}
 }
+@keyframes barbers-loop{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
 .reveal.visible{opacity:1;transform:none}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
@@ -1285,12 +1289,12 @@ header::before{
   /* Section headings */
   .section-title{font-size:clamp(38px,11vw,56px);margin-bottom:32px}
 
-  /* Barbers → horizontal carousel */
-  .barbers{padding:48px 0 40px}
+  /* Barbers → infinite loop */
+  .barbers{padding:48px 0 40px;overflow:hidden}
   .barbers>.section-label,.barbers>.section-title{padding-left:20px}
-  .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-padding-left:20px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 20px 4px;gap:14px;max-width:unset;margin:0}
-  .barbers-grid::-webkit-scrollbar{display:none}
-  .barber-card-wrap{flex-shrink:0;width:80vw;height:360px;scroll-snap-align:start}
+  .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:visible;scroll-snap-type:none;-webkit-overflow-scrolling:unset;scrollbar-width:unset;padding:0 0 4px 20px;gap:14px;max-width:unset;margin:0;width:max-content;animation:barbers-loop 9s linear infinite}
+  .barbers-grid.loop-paused{animation-play-state:paused}
+  .barber-card-wrap{flex-shrink:0;width:80vw;height:360px;scroll-snap-align:unset}
 
   /* Before/After → horizontal carousel */
   .ba-section{padding:48px 0 40px}
@@ -1993,36 +1997,20 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
   });
 });
 
-// Barbers carousel auto-scroll (mobile only)
+// Barbers infinite loop (mobile only)
 (function(){
+  if(!window.matchMedia('(max-width:768px)').matches) return;
   const grid = document.querySelector('.barbers-grid');
   if(!grid) return;
-  let timer, userTouching = false;
-  const cards = ()=>grid.querySelectorAll('.barber-card-wrap');
-  function currentIndex(){
-    const c = cards();
-    let closest = 0, minDist = Infinity;
-    c.forEach((el,i)=>{
-      const dist = Math.abs(el.offsetLeft - grid.scrollLeft - 20);
-      if(dist < minDist){ minDist=dist; closest=i; }
-    });
-    return closest;
-  }
-  function scrollToIndex(i){
-    const c = cards()[i];
-    if(!c) return;
-    grid.scrollTo({left:c.offsetLeft - 20, behavior:'smooth'});
-  }
-  function autoNext(){
-    if(userTouching) return;
-    const total = cards().length;
-    if(!total) return;
-    scrollToIndex((currentIndex()+1) % total);
-  }
-  function startAuto(){ clearInterval(timer); timer = setInterval(autoNext, 3000); }
-  grid.addEventListener('touchstart', ()=>{ userTouching=true; clearInterval(timer); }, {passive:true});
-  grid.addEventListener('touchend',   ()=>{ userTouching=false; startAuto(); }, {passive:true});
-  if(window.matchMedia('(max-width:768px)').matches) startAuto();
+  // clone all cards for seamless loop
+  Array.from(grid.children).forEach(c=>{
+    const clone = c.cloneNode(true);
+    clone.setAttribute('aria-hidden','true');
+    clone.setAttribute('tabindex','-1');
+    grid.appendChild(clone);
+  });
+  grid.addEventListener('touchstart', ()=>grid.classList.add('loop-paused'),    {passive:true});
+  grid.addEventListener('touchend',   ()=>grid.classList.remove('loop-paused'), {passive:true});
 })();
 
 // Services "show more" on mobile
