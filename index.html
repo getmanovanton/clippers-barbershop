@@ -276,9 +276,11 @@ header::before{
 .barber-card-wrap.card-visible .barber-card-inner{
   transform:rotateY(0deg);
 }
-.barber-card-wrap.card-visible:hover .barber-card-inner{
-  transform:rotateY(0deg) translateY(-8px);
-  box-shadow:0 28px 64px rgba(0,0,0,0.25);
+@media(hover:hover) and (pointer:fine){
+  .barber-card-wrap.card-visible:hover .barber-card-inner{
+    transform:rotateY(0deg) translateY(-8px);
+    box-shadow:0 28px 64px rgba(0,0,0,0.25);
+  }
 }
 /* faces */
 .barber-card-front,
