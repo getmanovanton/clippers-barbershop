@@ -1285,12 +1285,21 @@ header::before{
   /* Section headings */
   .section-title{font-size:clamp(38px,11vw,56px);margin-bottom:32px}
 
-  /* Barbers → horizontal carousel */
-  .barbers{padding:48px 0 40px}
-  .barbers>.section-label,.barbers>.section-title{padding-left:20px}
-  .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-padding-left:20px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 20px 4px;gap:14px;max-width:unset;margin:0}
-  .barbers-grid::-webkit-scrollbar{display:none}
-  .barber-card-wrap{flex-shrink:0;width:80vw;height:360px;scroll-snap-align:start}
+  /* Barbers → 3-column grid */
+  .barbers{padding:48px 16px 40px}
+  .barbers-grid{display:grid;grid-template-columns:repeat(3,1fr);overflow-x:unset;scroll-snap-type:unset;padding:0;gap:8px;max-width:unset;margin:0}
+  .barber-card-wrap{flex-shrink:unset;width:auto;height:220px;scroll-snap-align:unset}
+  .barber-card-body{padding:10px 12px 12px}
+  .barber-name{font-size:22px}
+  .barber-role{font-size:7px;letter-spacing:.18em}
+  .barber-tap-hint{display:none}
+  .barber-info-panel{padding:14px 12px}
+  .barber-info-name{font-size:26px;margin-bottom:6px}
+  .barber-info-role{font-size:7px;margin-bottom:4px}
+  .barber-info-stars{font-size:9px;margin-bottom:2px}
+  .barber-info-reviews{font-size:8px;margin-bottom:8px}
+  .barber-info-bio{font-size:9px;line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .barber-btn{padding:8px 10px;font-size:8px}
 
   /* Before/After → horizontal carousel */
   .ba-section{padding:48px 0 40px}
