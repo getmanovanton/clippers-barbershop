@@ -1289,12 +1289,15 @@ header::before{
   /* Section headings */
   .section-title{font-size:clamp(38px,11vw,56px);margin-bottom:32px}
 
-  /* Barbers → infinite loop */
-  .barbers{padding:48px 0 40px;overflow:hidden}
+  /* Barbers → peek carousel */
+  .barbers{padding:48px 0 40px}
   .barbers>.section-label,.barbers>.section-title{padding-left:20px}
-  .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:visible;scroll-snap-type:none;-webkit-overflow-scrolling:unset;scrollbar-width:unset;padding:0 0 4px 20px;gap:14px;max-width:unset;margin:0;width:max-content;animation:barbers-loop 9s linear infinite}
-  .barbers-grid.loop-paused{animation-play-state:paused}
-  .barber-card-wrap{flex-shrink:0;width:80vw;height:360px;scroll-snap-align:unset}
+  .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-padding-inline:11vw;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 11vw 4px;gap:14px;max-width:unset;margin:0}
+  .barbers-grid::-webkit-scrollbar{display:none}
+  .barber-card-wrap{flex-shrink:0;width:78vw;height:360px;scroll-snap-align:center}
+  .barbers-dots{display:flex;justify-content:center;gap:6px;margin-top:16px}
+  .barbers-dots span{width:6px;height:6px;border-radius:50%;background:var(--light);transition:background .3s,transform .3s}
+  .barbers-dots span.active{background:var(--ink);transform:scale(1.3)}
 
   /* Before/After → horizontal carousel */
   .ba-section{padding:48px 0 40px}
@@ -1997,47 +2000,33 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
   });
 });
 
-// Barbers infinite loop (mobile only)
+// Barbers peek carousel dots (mobile only)
 (function(){
   if(!window.matchMedia('(max-width:768px)').matches) return;
   const grid = document.querySelector('.barbers-grid');
   if(!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.barber-card-wrap'));
+  if(cards.length < 2) return;
 
-  grid.querySelectorAll('.barber-card-wrap').forEach(c=>c.classList.add('card-visible'));
-
-  const originals = Array.from(grid.children);
-  originals.forEach(c=>{
-    const clone = c.cloneNode(true);
-    clone.setAttribute('aria-hidden','true');
-    clone.setAttribute('tabindex','-1');
-    grid.appendChild(clone);
+  // inject dots
+  const dotsEl = document.createElement('div');
+  dotsEl.className = 'barbers-dots';
+  cards.forEach((_,i)=>{
+    const d = document.createElement('span');
+    if(i===0) d.classList.add('active');
+    dotsEl.appendChild(d);
   });
+  grid.parentElement.appendChild(dotsEl);
 
-  const duration = originals.length * 3;
-  grid.style.animationDuration = duration + 's';
-
-  let startX = 0, animX = 0, dragX = 0;
-
-  grid.addEventListener('touchstart', e=>{
-    const matrix = new DOMMatrix(window.getComputedStyle(grid).transform);
-    animX = matrix.m41;
-    dragX = animX;
-    grid.style.animationPlayState = 'paused';
-    grid.style.transform = `translateX(${animX}px)`;
-    startX = e.touches[0].clientX;
-  }, {passive:true});
-
-  grid.addEventListener('touchmove', e=>{
-    dragX = animX + (e.touches[0].clientX - startX);
-    grid.style.transform = `translateX(${dragX}px)`;
-  }, {passive:true});
-
-  grid.addEventListener('touchend', ()=>{
-    const halfWidth = grid.scrollWidth / 2;
-    let progress = ((-dragX % halfWidth) + halfWidth) % halfWidth / halfWidth;
-    grid.style.animationDelay = `-${progress * duration}s`;
-    grid.style.transform = '';
-    grid.style.animationPlayState = '';
+  // update dots on scroll
+  const dots = dotsEl.querySelectorAll('span');
+  grid.addEventListener('scroll', ()=>{
+    let closest = 0, minDist = Infinity;
+    cards.forEach((c,i)=>{
+      const dist = Math.abs(c.getBoundingClientRect().left - window.innerWidth/2);
+      if(dist < minDist){ minDist=dist; closest=i; }
+    });
+    dots.forEach((d,i)=>d.classList.toggle('active', i===closest));
   }, {passive:true});
 })();
 
