@@ -1862,12 +1862,11 @@ header::before{
   },{passive:true});
 })();
 
-// Preloader
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    document.getElementById('preloader').classList.add('hidden');
-  }, 1800);
-});
+// Preloader — hide when BOTH page loaded AND min 700ms passed (so pole animation plays)
+Promise.all([
+  new Promise(r => window.addEventListener('load', r)),
+  new Promise(r => setTimeout(r, 700))
+]).then(() => document.getElementById('preloader').classList.add('hidden'));
 
 const obs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
