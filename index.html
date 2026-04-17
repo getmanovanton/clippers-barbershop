@@ -1131,34 +1131,28 @@ header::before{
   padding:32px 32px calc(80px + env(safe-area-inset-bottom));
   background:var(--ink);
   display:flex;
+  flex-wrap:wrap;
   align-items:center;
   justify-content:space-between;
-  gap:24px;
-}
-.footer-left{
-  display:flex;flex-direction:column;gap:4px;
+  gap:16px 24px;
 }
 .footer-brand{
   font-family:'Bebas Neue',sans-serif;
-  font-size:18px;letter-spacing:.2em;color:#fff;
-}
-.footer-copy{
-  font-size:11px;color:rgba(255,255,255,0.35);font-weight:300;letter-spacing:.04em;
+  font-size:20px;letter-spacing:.2em;color:#fff;
 }
 .footer-center{
-  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
 }
 .footer-addr{
   font-size:12px;font-weight:500;color:rgba(255,255,255,0.75);letter-spacing:.04em;
 }
 .footer-phone{
   font-size:11px;color:rgba(255,255,255,0.4);font-weight:300;
-  text-decoration:none;
-  transition:color .2s;
+  text-decoration:none;transition:color .2s;
 }
 .footer-phone:hover{color:rgba(255,255,255,0.85);}
 .footer-right{
-  display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:10px;
 }
 .footer-social{
   display:inline-flex;align-items:center;justify-content:center;
@@ -1169,14 +1163,30 @@ header::before{
 }
 .footer-social:hover{border-color:rgba(255,255,255,0.6);color:#fff;}
 .footer-social:active{transform:scale(0.93);}
-.footer-social svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;}
+.footer-social svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;}
+.footer-bottom{
+  width:100%;
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.footer-copy{
+  font-size:11px;color:rgba(255,255,255,0.25);font-weight:300;letter-spacing:.04em;
+}
 @media(max-width:768px){
   .footer{
-    flex-direction:column;align-items:flex-start;
-    padding:28px 20px calc(80px + env(safe-area-inset-bottom));gap:20px;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:40px 24px calc(80px + env(safe-area-inset-bottom));
+    gap:24px;
   }
-  .footer-center{align-items:flex-start;text-align:left;}
-  .footer-right{margin-top:4px;}
+  .footer-brand{font-size:26px;letter-spacing:.25em;}
+  .footer-center{align-items:center;gap:8px;}
+  .footer-addr{font-size:13px;}
+  .footer-phone{font-size:13px;color:rgba(255,255,255,0.55);}
+  .footer-right{gap:12px;}
+  .footer-social svg{width:20px;height:20px;}
+  .footer-bottom{text-align:center;padding-top:24px;}
 }
 
 /* ── LIGHTBOX ── */
@@ -1814,10 +1824,7 @@ header::before{
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-left">
-    <span class="footer-brand">Clippers</span>
-    <span class="footer-copy">© 2025 Clippers Barbershop</span>
-  </div>
+  <span class="footer-brand">Clippers</span>
   <div class="footer-center">
     <span class="footer-addr">884 College St, Toronto</span>
     <a href="tel:+14165551234" class="footer-phone">+1 (416) 555-1234</a>
@@ -1832,6 +1839,9 @@ header::before{
     <a href="https://g.co/kgs/clippers" class="footer-social" target="_blank" rel="noopener" aria-label="Google Maps">
       <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
     </a>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Clippers Barbershop</span>
   </div>
 </footer>
 
