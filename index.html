@@ -599,8 +599,14 @@ header::before{
 
 /* ── FLOATING BOTTOM NAV ── */
 .float-nav{
-  position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(calc(100% + 24px));
+  opacity:0;pointer-events:none;
+  transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .4s ease;
   z-index:500;
+}
+.float-nav.nav-visible{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;pointer-events:auto;
   display:flex;align-items:center;gap:4px;
   border-radius:100px;
   padding:6px 6px 6px 20px;
@@ -1904,6 +1910,18 @@ const btn = document.getElementById('scrollTop');
 window.addEventListener('scroll',()=>{
   btn.classList.toggle('visible', window.scrollY > 300);
 });
+
+// Float nav: show after hero
+(function(){
+  const nav = document.querySelector('.float-nav');
+  const hero = document.querySelector('.hero');
+  if(!nav||!hero) return;
+  const onScroll = ()=>{
+    nav.classList.toggle('nav-visible', window.scrollY > hero.offsetHeight * 0.6);
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
 
 // Scroll spy
 const sections = ['team','services','pricing','gallery','about'];
