@@ -640,19 +640,6 @@ header::before{
   background:rgba(255,255,255,.3);
 }
 .float-nav .nav-active::after{ transform:scaleX(1); }
-.float-nav .nav-book{
-  background:linear-gradient(135deg,rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.4) 100%);
-  color:var(--ink) !important;
-  font-weight:600;padding:10px 20px;
-  border:1px solid rgba(255,255,255,0.8);
-  box-shadow:0 2px 0 rgba(255,255,255,0.9) inset, 0 3px 10px rgba(0,0,0,0.08);
-  transition:background .2s, box-shadow .2s, transform 160ms cubic-bezier(0.23,1,0.32,1);
-}
-.float-nav .nav-book::after{ display:none !important; }
-.float-nav .nav-book:hover{
-  background:linear-gradient(135deg,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.6) 100%);
-}
-.float-nav .nav-book:active{transform:scale(0.95);}
 
 /* ── SCROLL TO TOP ── */
 .scroll-top{
@@ -1383,7 +1370,6 @@ header::before{
   .float-nav::-webkit-scrollbar{display:none}
   .float-nav-logo{display:none}
   .float-nav a{padding:9px 10px;font-size:9.5px;letter-spacing:.03em;min-height:40px;display:flex;align-items:center;border-radius:14px;}
-  .float-nav .nav-book{padding:9px 14px;}
 }
 </style>
 </head>
@@ -1869,7 +1855,6 @@ header::before{
   <a href="#pricing">Prices</a>
   <a href="#gallery">Gallery</a>
   <a href="#about">Find Us</a>
-  <a href="https://n802209.alteg.io" class="nav-book" target="_blank">Book</a>
 </nav>
 
 <!-- SCROLL TOP -->
@@ -1922,7 +1907,7 @@ window.addEventListener('scroll',()=>{
 
 // Scroll spy
 const sections = ['team','services','pricing','gallery','about'];
-const navLinks = document.querySelectorAll('.float-nav a:not(.nav-book)');
+const navLinks = document.querySelectorAll('.float-nav a');
 const spyObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
