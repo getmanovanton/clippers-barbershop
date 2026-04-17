@@ -2002,20 +2002,43 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
   if(!window.matchMedia('(max-width:768px)').matches) return;
   const grid = document.querySelector('.barbers-grid');
   if(!grid) return;
-  // show cards immediately (no entrance animation needed for loop)
+
   grid.querySelectorAll('.barber-card-wrap').forEach(c=>c.classList.add('card-visible'));
-  // clone all cards for seamless loop
-  Array.from(grid.children).forEach(c=>{
+
+  const originals = Array.from(grid.children);
+  originals.forEach(c=>{
     const clone = c.cloneNode(true);
     clone.setAttribute('aria-hidden','true');
     clone.setAttribute('tabindex','-1');
     grid.appendChild(clone);
   });
-  // dynamic speed: 3s per card
-  const cardCount = grid.querySelectorAll('.barber-card-wrap:not([aria-hidden])').length;
-  grid.style.animationDuration = (cardCount * 3) + 's';
-  grid.addEventListener('touchstart', ()=>grid.classList.add('loop-paused'),    {passive:true});
-  grid.addEventListener('touchend',   ()=>grid.classList.remove('loop-paused'), {passive:true});
+
+  const duration = originals.length * 3;
+  grid.style.animationDuration = duration + 's';
+
+  let startX = 0, animX = 0, dragX = 0;
+
+  grid.addEventListener('touchstart', e=>{
+    const matrix = new DOMMatrix(window.getComputedStyle(grid).transform);
+    animX = matrix.m41;
+    dragX = animX;
+    grid.style.animationPlayState = 'paused';
+    grid.style.transform = `translateX(${animX}px)`;
+    startX = e.touches[0].clientX;
+  }, {passive:true});
+
+  grid.addEventListener('touchmove', e=>{
+    dragX = animX + (e.touches[0].clientX - startX);
+    grid.style.transform = `translateX(${dragX}px)`;
+  }, {passive:true});
+
+  grid.addEventListener('touchend', ()=>{
+    const halfWidth = grid.scrollWidth / 2;
+    let progress = ((-dragX % halfWidth) + halfWidth) % halfWidth / halfWidth;
+    grid.style.animationDelay = `-${progress * duration}s`;
+    grid.style.transform = '';
+    grid.style.animationPlayState = '';
+  }, {passive:true});
 })();
 
 // Services "show more" on mobile
