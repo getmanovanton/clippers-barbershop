@@ -1997,13 +1997,8 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
 (function(){
   const grid = document.querySelector('.barbers-grid');
   if(!grid) return;
-  let timer, userTouching = false, pauseTimer;
+  let timer, userTouching = false;
   const cards = ()=>grid.querySelectorAll('.barber-card-wrap');
-  function scrollToIndex(i){
-    const c = cards()[i];
-    if(!c) return;
-    grid.scrollTo({left:c.offsetLeft - 20, behavior:'smooth'});
-  }
   function currentIndex(){
     const c = cards();
     let closest = 0, minDist = Infinity;
@@ -2013,23 +2008,20 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
     });
     return closest;
   }
+  function scrollToIndex(i){
+    const c = cards()[i];
+    if(!c) return;
+    grid.scrollTo({left:c.offsetLeft - 20, behavior:'smooth'});
+  }
   function autoNext(){
     if(userTouching) return;
     const total = cards().length;
     if(!total) return;
-    const next = (currentIndex()+1) % total;
-    scrollToIndex(next);
+    scrollToIndex((currentIndex()+1) % total);
   }
-  function startAuto(){ timer = setInterval(autoNext, 3500); }
-  function pauseAuto(){
-    clearInterval(timer);
-    clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(startAuto, 5000);
-  }
-  grid.addEventListener('touchstart', ()=>{ userTouching=true; pauseAuto(); }, {passive:true});
-  grid.addEventListener('touchend',   ()=>{ userTouching=false; }, {passive:true});
-  grid.addEventListener('scroll',     pauseAuto, {passive:true});
-  // only run on mobile
+  function startAuto(){ clearInterval(timer); timer = setInterval(autoNext, 3000); }
+  grid.addEventListener('touchstart', ()=>{ userTouching=true; clearInterval(timer); }, {passive:true});
+  grid.addEventListener('touchend',   ()=>{ userTouching=false; startAuto(); }, {passive:true});
   if(window.matchMedia('(max-width:768px)').matches) startAuto();
 })();
 
