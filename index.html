@@ -2002,6 +2002,8 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
   if(!window.matchMedia('(max-width:768px)').matches) return;
   const grid = document.querySelector('.barbers-grid');
   if(!grid) return;
+  // show cards immediately (no entrance animation needed for loop)
+  grid.querySelectorAll('.barber-card-wrap').forEach(c=>c.classList.add('card-visible'));
   // clone all cards for seamless loop
   Array.from(grid.children).forEach(c=>{
     const clone = c.cloneNode(true);
@@ -2009,6 +2011,9 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
     clone.setAttribute('tabindex','-1');
     grid.appendChild(clone);
   });
+  // dynamic speed: 3s per card
+  const cardCount = grid.querySelectorAll('.barber-card-wrap:not([aria-hidden])').length;
+  grid.style.animationDuration = (cardCount * 3) + 's';
   grid.addEventListener('touchstart', ()=>grid.classList.add('loop-paused'),    {passive:true});
   grid.addEventListener('touchend',   ()=>grid.classList.remove('loop-paused'), {passive:true});
 })();
