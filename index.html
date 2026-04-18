@@ -312,7 +312,7 @@ header::before{
 }
 
 /* FRONT — photo only */
-.barber-card-front{ background:#111; cursor:pointer; }
+.barber-card-front{ background:#c8bfb5; cursor:pointer; }
 .barber-card-photo{
   position:absolute;inset:0;
   width:100%;height:100%;
@@ -708,9 +708,9 @@ header::before{
   transform:translateY(0) scale(1);
   clip-path:inset(0 0 0% 0 round 24px);
 }
-.barber-card-wrap:nth-child(1){transition-delay:0s}
-.barber-card-wrap:nth-child(2){transition-delay:0.15s}
-.barber-card-wrap:nth-child(3){transition-delay:0.3s}
+.barber-card-wrap:nth-child(1),.barber-card-wrap:nth-child(1) .barber-card-inner{transition-delay:0s}
+.barber-card-wrap:nth-child(2),.barber-card-wrap:nth-child(2) .barber-card-inner{transition-delay:0.2s}
+.barber-card-wrap:nth-child(3),.barber-card-wrap:nth-child(3) .barber-card-inner{transition-delay:0.4s}
 
 /* ── BEFORE / AFTER ── */
 .ba-section{
@@ -1278,6 +1278,7 @@ header::before{
   .section-title{font-size:clamp(38px,11vw,56px);margin-bottom:32px}
 
   /* Barbers → peek carousel */
+  .barber-card-wrap{transform:none;transition:opacity .6s cubic-bezier(.16,1,.3,1),clip-path .7s cubic-bezier(.16,1,.3,1)}
   .barbers{padding:48px 0 40px}
   .barbers>.section-label,.barbers>.section-title{padding-left:20px}
   .barbers-grid{display:flex;flex-direction:row;grid-template-columns:unset;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-padding-inline:11vw;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 11vw 4px;gap:14px;max-width:unset;margin:0}
@@ -1935,18 +1936,30 @@ sections.forEach(id=>{
 });
 
 // Barber cards entrance
-const cardObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      document.querySelectorAll('.barber-card-wrap').forEach((c,i)=>{
-        setTimeout(()=>c.classList.add('card-visible'), i*350);
-      });
-      cardObs.disconnect();
-    }
-  });
-},{threshold:0.2});
 const grid = document.getElementById('barbersGrid');
-if(grid) cardObs.observe(grid);
+if(grid){
+  const cards = Array.from(grid.querySelectorAll('.barber-card-wrap'));
+  function revealVisible(){
+    cards.forEach(card=>{
+      if(card.classList.contains('card-visible')) return;
+      const r = card.getBoundingClientRect();
+      if(r.left + r.width/2 >= 0 && r.left + r.width/2 <= window.innerWidth)
+        card.classList.add('card-visible');
+    });
+  }
+  if(window.innerWidth <= 768){
+    grid.addEventListener('scroll', revealVisible, {passive:true});
+    new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting) revealVisible();
+    },{threshold:0.1}).observe(grid);
+  } else {
+    new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting){
+        cards.forEach(c=>c.classList.add('card-visible'));
+      }
+    },{threshold:0.1}).observe(grid);
+  }
+}
 
 // Before/After cards entrance
 const baObs = new IntersectionObserver(entries=>{
@@ -1986,12 +1999,23 @@ document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
 // Barber card click-flip
 document.querySelectorAll('.barber-card-wrap').forEach(card=>{
   const toggle = ()=>{
-    if(!card.classList.contains('card-visible')) return;
     card.classList.toggle('card-flipped');
     card.classList.add('card-seen');
     card.setAttribute('aria-expanded', card.classList.contains('card-flipped') ? 'true' : 'false');
   };
-  card.addEventListener('click', toggle);
+  let touchStartX = 0, touchStartY = 0;
+  card.addEventListener('touchstart', e=>{
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  card.addEventListener('touchend', e=>{
+    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    if(dx < 8 && dy < 8) toggle();
+  }, {passive:true});
+  card.addEventListener('click', e=>{
+    if(!('ontouchstart' in window)) toggle();
+  });
   card.addEventListener('keydown', e=>{
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
   });
