@@ -1,0 +1,20 @@
+backend:
+  name: git-gateway
+  branch: master
+
+media_folder: "images/barbers"
+public_folder: "/images/barbers"
+
+collections:
+  - name: "barbers"
+    label: "Barbers"
+    label_singular: "Barber"
+    folder: "_barbers"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Role", name: "role", widget: "string", hint: "e.g. Fade & Taper Specialist" }
+      - { label: "Bio", name: "bio", widget: "text" }
+      - { label: "Photo", name: "photo", widget: "image" }
+      - { label: "Instagram", name: "instagram", widget: "string", required: false, hint: "e.g. @username" }
