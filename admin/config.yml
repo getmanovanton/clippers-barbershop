@@ -8,13 +8,19 @@ public_folder: "/images/barbers"
 collections:
   - name: "barbers"
     label: "Barbers"
-    label_singular: "Barber"
-    folder: "_barbers"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Name", name: "name", widget: "string" }
-      - { label: "Role", name: "role", widget: "string", hint: "e.g. Fade & Taper Specialist" }
-      - { label: "Bio", name: "bio", widget: "text" }
-      - { label: "Photo", name: "photo", widget: "image" }
-      - { label: "Instagram", name: "instagram", widget: "string", required: false, hint: "e.g. @username" }
+    files:
+      - name: "barbers_list"
+        label: "Barbers List"
+        file: "data/barbers.json"
+        fields:
+          - name: "barbers"
+            label: "Barbers"
+            widget: "list"
+            label_singular: "Barber"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string", hint: "e.g. Top Barber, Fade Specialist" }
+              - { label: "Bio", name: "bio", widget: "text" }
+              - { label: "Photo", name: "photo", widget: "image" }
+              - { label: "Reviews", name: "reviews", widget: "string", hint: "e.g. 245 reviews on Google" }
+              - { label: "Book URL", name: "bookUrl", widget: "string", default: "https://n802209.alteg.io" }

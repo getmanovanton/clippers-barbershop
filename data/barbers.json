@@ -1,0 +1,28 @@
+{
+  "barbers": [
+    {
+      "name": "Jack",
+      "role": "Top Barber",
+      "bio": "Our most reviewed barber. Fades, tapers, classics — whatever you need, Jack delivers every time.",
+      "photo": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=600&q=80&fit=crop&crop=top",
+      "reviews": "245 reviews on Google",
+      "bookUrl": "https://n802209.alteg.io"
+    },
+    {
+      "name": "David",
+      "role": "Barber",
+      "bio": "Precision cuts and clean lines. David brings calm energy and consistent results to every chair.",
+      "photo": "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=80&fit=crop&crop=top",
+      "reviews": "19 reviews on Google",
+      "bookUrl": "https://n802209.alteg.io"
+    },
+    {
+      "name": "Dawa",
+      "role": "Barber",
+      "bio": "Fresh perspective, sharp technique. Dawa brings creativity and genuine care to every cut.",
+      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&fit=crop&crop=top",
+      "reviews": "New & rising",
+      "bookUrl": "https://n802209.alteg.io"
+    }
+  ]
+}

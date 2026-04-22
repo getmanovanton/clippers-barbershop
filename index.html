@@ -1426,71 +1426,7 @@ header::before{
 <section class="barbers" id="team">
   <p class="section-label reveal">The Team</p>
   <h2 class="section-title reveal d1">OUR BARBERS</h2>
-  <div class="barbers-grid" id="barbersGrid">
-    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="Jack, Top Barber — press to see info">
-      <div class="barber-card-inner">
-        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
-        <div class="barber-card-front">
-          <img loading="lazy" class="barber-card-photo" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=600&q=80&fit=crop&crop=top" alt="Jack">
-          <div class="barber-card-body">
-            <div class="barber-role">Top Barber</div>
-            <div class="barber-name">Jack</div>
-            <div class="barber-tap-hint">Tap for info</div>
-          </div>
-        </div>
-        <div class="barber-info-panel">
-          <div class="barber-info-role">Top Barber</div>
-          <div class="barber-info-name">Jack</div>
-          <div class="barber-info-stars">★★★★★</div>
-          <div class="barber-info-reviews">245 reviews on Google</div>
-          <p class="barber-info-bio">Our most reviewed barber. Fades, tapers, classics — whatever you need, Jack delivers every time.</p>
-          <a href="https://n802209.alteg.io" class="barber-btn">Book Jack →</a>
-        </div>
-      </div>
-    </div>
-    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="David, Barber — press to see info">
-      <div class="barber-card-inner">
-        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
-        <div class="barber-card-front">
-          <img loading="lazy" class="barber-card-photo" src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=80&fit=crop&crop=top" alt="David">
-          <div class="barber-card-body">
-            <div class="barber-role">Barber</div>
-            <div class="barber-name">David</div>
-            <div class="barber-tap-hint">Tap for info</div>
-          </div>
-        </div>
-        <div class="barber-info-panel">
-          <div class="barber-info-role">Barber</div>
-          <div class="barber-info-name">David</div>
-          <div class="barber-info-stars">★★★★★</div>
-          <div class="barber-info-reviews">19 reviews on Google</div>
-          <p class="barber-info-bio">Precision cuts and clean lines. David brings calm energy and consistent results to every chair.</p>
-          <a href="https://n802209.alteg.io" class="barber-btn">Book David →</a>
-        </div>
-      </div>
-    </div>
-    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="Dawa, Barber — press to see info">
-      <div class="barber-card-inner">
-        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
-        <div class="barber-card-front">
-          <img loading="lazy" class="barber-card-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&fit=crop&crop=top" alt="Dawa">
-          <div class="barber-card-body">
-            <div class="barber-role">Barber</div>
-            <div class="barber-name">Dawa</div>
-            <div class="barber-tap-hint">Tap for info</div>
-          </div>
-        </div>
-        <div class="barber-info-panel">
-          <div class="barber-info-role">Barber</div>
-          <div class="barber-info-name">Dawa</div>
-          <div class="barber-info-stars">★★★★★</div>
-          <div class="barber-info-reviews">New & rising</div>
-          <p class="barber-info-bio">Fresh perspective, sharp technique. Dawa brings creativity and genuine care to every cut.</p>
-          <a href="https://n802209.alteg.io" class="barber-btn">Book Dawa →</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="barbers-grid" id="barbersGrid"></div>
 </section>
 
 <!-- BEFORE / AFTER -->
@@ -1936,6 +1872,42 @@ sections.forEach(id=>{
   if(el) spyObs.observe(el);
 });
 
+// Render barbers from JSON
+function renderBarbers(barbers){
+  const grid = document.getElementById('barbersGrid');
+  if(!grid) return;
+  grid.innerHTML = barbers.map(b=>`
+    <div class="barber-card-wrap" role="button" tabindex="0" aria-expanded="false" aria-label="${b.name}, ${b.role} — press to see info">
+      <div class="barber-card-inner">
+        <div class="barber-card-back"><div class="barber-card-back-logo">CLIPPERS</div></div>
+        <div class="barber-card-front">
+          <img loading="lazy" class="barber-card-photo" src="${b.photo}" alt="${b.name}">
+          <div class="barber-card-body">
+            <div class="barber-role">${b.role}</div>
+            <div class="barber-name">${b.name}</div>
+            <div class="barber-tap-hint">Tap for info</div>
+          </div>
+        </div>
+        <div class="barber-info-panel">
+          <div class="barber-info-role">${b.role}</div>
+          <div class="barber-info-name">${b.name}</div>
+          <div class="barber-info-stars">★★★★★</div>
+          <div class="barber-info-reviews">${b.reviews}</div>
+          <p class="barber-info-bio">${b.bio}</p>
+          <a href="${b.bookUrl}" class="barber-btn">Book ${b.name} →</a>
+        </div>
+      </div>
+    </div>`).join('');
+  initBarberCards();
+}
+
+fetch('/data/barbers.json')
+  .then(r=>r.json())
+  .then(d=>renderBarbers(d.barbers))
+  .catch(()=>console.warn('Could not load barbers.json'));
+
+function initBarberCards(){
+
 // Barber cards entrance
 const grid = document.getElementById('barbersGrid');
 if(grid){
@@ -2021,6 +1993,8 @@ document.querySelectorAll('.barber-card-wrap').forEach(card=>{
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
   });
 });
+
+} // end initBarberCards
 
 // Barbers peek carousel dots (mobile only)
 (function(){
