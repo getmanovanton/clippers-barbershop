@@ -255,8 +255,7 @@ header::before{
   margin-bottom:48px;
 }
 .barbers-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
-  max-width:860px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;
 }
 /* flip wrapper */
 .barber-card-wrap{
@@ -712,6 +711,7 @@ header::before{
 .barber-card-wrap:nth-child(1),.barber-card-wrap:nth-child(1) .barber-card-inner{transition-delay:0s}
 .barber-card-wrap:nth-child(2),.barber-card-wrap:nth-child(2) .barber-card-inner{transition-delay:0.2s}
 .barber-card-wrap:nth-child(3),.barber-card-wrap:nth-child(3) .barber-card-inner{transition-delay:0.4s}
+.barber-card-wrap:nth-child(4),.barber-card-wrap:nth-child(4) .barber-card-inner{transition-delay:0.6s}
 
 /* ── BEFORE / AFTER ── */
 .ba-section{
